@@ -1,300 +1,304 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PlanIt - Personal Task Planner</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlanIt - Personal Task Planner</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="Favicon.ico">
 </head>
+
 <body>
 
-  <!-- Top App Bar / Header -->
-  <header class="app-header">
-    <div class="header-container">
-      <a href="#" class="logo">
-        <span class="material-symbols-outlined">event_available</span>
-        <span>PlanIt</span>
-      </a>
-      <div class="header-actions">
-        <span class="header-date" id="header-date">Tuesday, September 1</span>
-        <button class="btn-theme-toggle" id="theme-toggle-btn" aria-label="Toggle theme">
+    <!-- Top App Bar / Header -->
+    <header class="app-header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <span class="material-symbols-outlined">event_available</span>
+                <span>PlanIt</span>
+            </a>
+            <div class="header-actions">
+                <span class="header-date" id="header-date">Tuesday, September 1</span>
+                <button class="btn-theme-toggle" id="theme-toggle-btn" aria-label="Toggle theme">
           <span class="material-symbols-outlined" style="font-size: 18px;">dark_mode</span>
           <span id="theme-btn-text">Dark</span>
         </button>
-      </div>
-    </div>
-  </header>
+            </div>
+        </div>
+    </header>
 
-  <!-- Main Content Layout -->
-  <main class="main-container">
-    
-    <!-- Greeting Section -->
-    <div class="greeting-section">
-      <h1 class="greeting-title" id="greeting-title">Good evening</h1>
-      <p class="greeting-sub">Here's what's on your schedule.</p>
-    </div>
+    <!-- Main Content Layout -->
+    <main class="main-container">
 
-    <!-- Summary Statistics Grid -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-value" id="stat-total">0</div>
-        <div class="stat-label">Total tasks</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="stat-completed">0</div>
-        <div class="stat-label">Completed</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="stat-pending">0</div>
-        <div class="stat-label">Pending</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="stat-streak">0</div>
-        <div class="stat-label">Day streak</div>
-      </div>
-    </div>
+        <!-- Greeting Section -->
+        <div class="greeting-section">
+            <h1 class="greeting-title" id="greeting-title">Good evening</h1>
+            <p class="greeting-sub">Here's what's on your schedule.</p>
+        </div>
 
-    <!-- Main Dashboard Grid -->
-    <div class="dashboard-grid">
+        <!-- Summary Statistics Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="stat-total">0</div>
+                <div class="stat-label">Total tasks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-completed">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-pending">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-streak">0</div>
+                <div class="stat-label">Day streak</div>
+            </div>
+        </div>
 
-      <!-- Left Column: Search, Controls, Task Lists -->
-      <div class="left-column">
+        <!-- Main Dashboard Grid -->
+        <div class="dashboard-grid">
 
-        <!-- Search & Filter Controls -->
-        <div class="controls-bar">
-          <div class="search-input-wrap">
-            <span class="material-symbols-outlined search-icon">search</span>
-            <input type="text" id="search-input" class="search-input" placeholder="Search tasks...">
-          </div>
-          <div class="filter-pills">
-            <button class="btn-pill active" data-filter="all">All</button>
-            <button class="btn-pill" data-filter="today">Today</button>
-            <button class="btn-pill" data-filter="upcoming">Upcoming</button>
-            <button class="btn-pill" data-filter="completed">Completed</button>
-          </div>
-          <button class="btn-add-task" id="open-add-modal-btn">
+            <!-- Left Column: Search, Controls, Task Lists -->
+            <div class="left-column">
+
+                <!-- Search & Filter Controls -->
+                <div class="controls-bar">
+                    <div class="search-input-wrap">
+                        <span class="material-symbols-outlined search-icon">search</span>
+                        <input type="text" id="search-input" class="search-input" placeholder="Search tasks...">
+                    </div>
+                    <div class="filter-pills">
+                        <button class="btn-pill active" data-filter="all">All</button>
+                        <button class="btn-pill" data-filter="today">Today</button>
+                        <button class="btn-pill" data-filter="upcoming">Upcoming</button>
+                        <button class="btn-pill" data-filter="completed">Completed</button>
+                    </div>
+                    <button class="btn-add-task" id="open-add-modal-btn">
             <span class="material-symbols-outlined" style="font-size: 18px;">add</span>
             <span>New task</span>
           </button>
-        </div>
+                </div>
 
-        <!-- Today's Progress Card -->
-        <div class="card">
-          <div class="progress-card-header">
-            <h2 class="card-title" style="margin-bottom: 0;">Today's progress</h2>
-            <span class="progress-text" id="progress-status-text">No tasks scheduled for today</span>
-          </div>
-          <div class="progress-bar-track">
-            <div class="progress-bar-fill" id="progress-bar-fill"></div>
-          </div>
-        </div>
+                <!-- Today's Progress Card -->
+                <div class="card">
+                    <div class="progress-card-header">
+                        <h2 class="card-title" style="margin-bottom: 0;">Today's progress</h2>
+                        <span class="progress-text" id="progress-status-text">No tasks scheduled for today</span>
+                    </div>
+                    <div class="progress-bar-track">
+                        <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                    </div>
+                </div>
 
-        <!-- Main Task List Card -->
-        <div class="card" style="min-height: 220px;">
-          <h2 class="card-title" id="task-list-title">All tasks</h2>
-          <div class="empty-state" id="tasks-empty-state">Nothing here yet. Add your first task.</div>
-          <div class="task-list" id="task-list-container"></div>
-        </div>
+                <!-- Main Task List Card -->
+                <div class="card" style="min-height: 220px;">
+                    <h2 class="card-title" id="task-list-title">All tasks</h2>
+                    <div class="empty-state" id="tasks-empty-state">Nothing here yet. Add your first task.</div>
+                    <div class="task-list" id="task-list-container"></div>
+                </div>
 
-        <!-- Upcoming Tasks Card -->
-        <div class="card">
-          <h2 class="card-title">Upcoming</h2>
-          <div class="empty-state" id="upcoming-empty-state">No upcoming tasks scheduled.</div>
-          <div class="task-list" id="upcoming-list-container"></div>
-        </div>
+                <!-- Upcoming Tasks Card -->
+                <div class="card">
+                    <h2 class="card-title">Upcoming</h2>
+                    <div class="empty-state" id="upcoming-empty-state">No upcoming tasks scheduled.</div>
+                    <div class="task-list" id="upcoming-list-container"></div>
+                </div>
 
-      </div>
+            </div>
 
-      <!-- Right Column: Interactive Tools (Calendar & Pomodoro Timer) -->
-      <div class="right-column">
+            <!-- Right Column: Interactive Tools (Calendar & Pomodoro Timer) -->
+            <div class="right-column">
 
-        <!-- Calendar Component -->
-        <div class="card">
-          <div class="calendar-header">
-            <button class="btn-icon" id="prev-month-btn" aria-label="Previous Month">
+                <!-- Calendar Component -->
+                <div class="card">
+                    <div class="calendar-header">
+                        <button class="btn-icon" id="prev-month-btn" aria-label="Previous Month">
               <span class="material-symbols-outlined">chevron_left</span>
             </button>
-            <h3 class="calendar-month-title" id="calendar-month-year">September 2026</h3>
-            <button class="btn-icon" id="next-month-btn" aria-label="Next Month">
+                        <h3 class="calendar-month-title" id="calendar-month-year">September 2026</h3>
+                        <button class="btn-icon" id="next-month-btn" aria-label="Next Month">
               <span class="material-symbols-outlined">chevron_right</span>
             </button>
-          </div>
+                    </div>
 
-          <div class="calendar-grid-weekdays">
-            <div>Sun</div>
-            <div>Mon</div>
-            <div>Tue</div>
-            <div>Wed</div>
-            <div>Thu</div>
-            <div>Fri</div>
-            <div>Sat</div>
-          </div>
+                    <div class="calendar-grid-weekdays">
+                        <div>Sun</div>
+                        <div>Mon</div>
+                        <div>Tue</div>
+                        <div>Wed</div>
+                        <div>Thu</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
+                    </div>
 
-          <div class="calendar-grid-days" id="calendar-days-grid">
-            <!-- Dynamically generated calendar days -->
-          </div>
+                    <div class="calendar-grid-days" id="calendar-days-grid">
+                        <!-- Dynamically generated calendar days -->
+                    </div>
 
-          <div class="calendar-selected-details">
-            <h4 class="selected-date-heading" id="selected-date-title">Today</h4>
-            <div class="selected-date-task-list" id="selected-date-tasks">
-              No tasks on this day.
-            </div>
-          </div>
-        </div>
+                    <div class="calendar-selected-details">
+                        <h4 class="selected-date-heading" id="selected-date-title">Today</h4>
+                        <div class="selected-date-task-list" id="selected-date-tasks">
+                            No tasks on this day.
+                        </div>
+                    </div>
+                </div>
 
-        <!-- Focus Mode / Pomodoro Timer -->
-        <div class="card">
-          <h3 class="card-title" style="margin-bottom: 12px;">Focus Mode</h3>
-          <div class="pomodoro-modes">
-            <button class="btn-pill active" id="pomo-mode-work" data-mode="work">Work</button>
-            <button class="btn-pill" id="pomo-mode-break" data-mode="break">Break</button>
-          </div>
+                <!-- Focus Mode / Pomodoro Timer -->
+                <div class="card">
+                    <h3 class="card-title" style="margin-bottom: 12px;">Focus Mode</h3>
+                    <div class="pomodoro-modes">
+                        <button class="btn-pill active" id="pomo-mode-work" data-mode="work">Work</button>
+                        <button class="btn-pill" id="pomo-mode-break" data-mode="break">Break</button>
+                    </div>
 
-          <div class="pomodoro-display">
-            <div class="pomodoro-time" id="pomodoro-timer-display">25:00</div>
-          </div>
+                    <div class="pomodoro-display">
+                        <div class="pomodoro-time" id="pomodoro-timer-display">25:00</div>
+                    </div>
 
-          <div class="pomodoro-select-wrap">
-            <select id="pomodoro-task-select" class="pomodoro-select">
+                    <div class="pomodoro-select-wrap">
+                        <select id="pomodoro-task-select" class="pomodoro-select">
               <option value="">No task linked</option>
             </select>
-          </div>
+                    </div>
 
-          <div class="pomodoro-controls">
-            <button class="btn-primary-block" id="pomodoro-start-btn">Start</button>
-            <button class="btn-outline-block" id="pomodoro-reset-btn">Reset</button>
-          </div>
+                    <div class="pomodoro-controls">
+                        <button class="btn-primary-block" id="pomodoro-start-btn">Start</button>
+                        <button class="btn-outline-block" id="pomodoro-reset-btn">Reset</button>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
 
-      </div>
+    </main>
 
-    </div>
-
-  </main>
-
-  <!-- Add / Edit Task Modal -->
-  <div class="modal-overlay" id="task-modal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 class="modal-title" id="modal-heading">New Task</h3>
-        <button class="btn-icon" id="close-modal-btn" aria-label="Close modal">
+    <!-- Add / Edit Task Modal -->
+    <div class="modal-overlay" id="task-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-heading">New Task</h3>
+                <button class="btn-icon" id="close-modal-btn" aria-label="Close modal">
           <span class="material-symbols-outlined">close</span>
         </button>
-      </div>
-
-      <form id="task-form">
-        <div class="modal-body">
-          <input type="hidden" id="task-id">
-
-          <div class="form-group">
-            <label class="form-label" for="task-title-input">Task Title *</label>
-            <input type="text" id="task-title-input" class="form-input" placeholder="e.g., Complete DBMS Assignment" required>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="task-desc-input">Description</label>
-            <textarea id="task-desc-input" class="form-textarea" rows="2" placeholder="Add notes, links, or details..."></textarea>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="task-date-input">Date *</label>
-              <input type="date" id="task-date-input" class="form-input" required>
             </div>
-            <div class="form-group">
-              <label class="form-label" for="task-time-input">Time</label>
-              <input type="time" id="task-time-input" class="form-input">
-            </div>
-          </div>
 
-          <div class="form-group">
-            <label class="form-label">Priority</label>
-            <div class="priority-selector">
-              <label class="priority-option low" id="prio-low-label">
+            <form id="task-form">
+                <div class="modal-body">
+                    <input type="hidden" id="task-id">
+
+                    <div class="form-group">
+                        <label class="form-label" for="task-title-input">Task Title *</label>
+                        <input type="text" id="task-title-input" class="form-input" placeholder="e.g., Complete DBMS Assignment" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="task-desc-input">Description</label>
+                        <textarea id="task-desc-input" class="form-textarea" rows="2" placeholder="Add notes, links, or details..."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="task-date-input">Date *</label>
+                            <input type="date" id="task-date-input" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="task-time-input">Time</label>
+                            <input type="time" id="task-time-input" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Priority</label>
+                        <div class="priority-selector">
+                            <label class="priority-option low" id="prio-low-label">
                 <input type="radio" name="priority" value="Low"> Low
               </label>
-              <label class="priority-option medium selected" id="prio-med-label">
+                            <label class="priority-option medium selected" id="prio-med-label">
                 <input type="radio" name="priority" value="Medium" checked> Medium
               </label>
-              <label class="priority-option high" id="prio-high-label">
+                            <label class="priority-option high" id="prio-high-label">
                 <input type="radio" name="priority" value="High"> High
               </label>
-            </div>
-          </div>
+                        </div>
+                    </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="task-category-select">Category</label>
-              <select id="task-category-select" class="form-select">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="task-category-select">Category</label>
+                            <select id="task-category-select" class="form-select">
                 <option value="Study">Study</option>
                 <option value="Work">Work</option>
                 <option value="Personal">Personal</option>
                 <option value="Other">Other</option>
               </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="task-repeat-select">Repeat</label>
-              <select id="task-repeat-select" class="form-select">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="task-repeat-select">Repeat</label>
+                            <select id="task-repeat-select" class="form-select">
                 <option value="none">Doesn't repeat</option>
                 <option value="daily">Every day</option>
                 <option value="weekly">Every week</option>
                 <option value="monthly">Every month</option>
               </select>
-            </div>
-          </div>
+                        </div>
+                    </div>
 
-        </div>
+                </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn-outline-block" id="cancel-task-btn" style="width: auto; padding: 8px 16px;">Cancel</button>
-          <button type="submit" class="btn-primary-block" style="width: auto; padding: 8px 20px;">Save Task</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn-outline-block" id="cancel-task-btn" style="width: auto; padding: 8px 16px;">Cancel</button>
+                    <button type="submit" class="btn-primary-block" style="width: auto; padding: 8px 20px;">Save Task</button>
+                </div>
+            </form>
         </div>
-      </form>
     </div>
-  </div>
 
-  <!-- Delete Task Confirmation Modal -->
-  <div class="modal-overlay" id="delete-modal">
-    <div class="modal-card" style="max-width: 400px;">
-      <div class="modal-header">
-        <h3 class="modal-title">Delete Task?</h3>
-        <button class="btn-icon" id="close-delete-modal" aria-label="Close modal">
+    <!-- Delete Task Confirmation Modal -->
+    <div class="modal-overlay" id="delete-modal">
+        <div class="modal-card" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Delete Task?</h3>
+                <button class="btn-icon" id="close-delete-modal" aria-label="Close modal">
           <span class="material-symbols-outlined">close</span>
         </button>
-      </div>
-      <div class="modal-body">
-        <p style="color: var(--text-muted); font-size: 0.9rem;">Are you sure you want to delete this task? This action cannot be undone.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn-outline-block" id="cancel-delete-btn" style="width: auto; padding: 8px 16px;">Cancel</button>
-        <button type="button" class="btn-primary-block" id="confirm-delete-btn" style="width: auto; padding: 8px 20px; background-color: var(--priority-high);">Delete</button>
-      </div>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Are you sure you want to delete this task? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-outline-block" id="cancel-delete-btn" style="width: auto; padding: 8px 16px;">Cancel</button>
+                <button type="button" class="btn-primary-block" id="confirm-delete-btn" style="width: auto; padding: 8px 20px; background-color: var(--priority-high);">Delete</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- Toast Notification Container -->
-  <div class="toast-container" id="toast-container"></div>
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
 
-  <!-- Mobile Bottom Navigation Bar -->
-  <nav class="mobile-nav">
-    <button class="mobile-nav-btn active" id="mnav-tasks">
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="mobile-nav">
+        <button class="mobile-nav-btn active" id="mnav-tasks">
       <span class="material-symbols-outlined filled">list_alt</span>
       <span>Tasks</span>
     </button>
-    <button class="mobile-nav-btn" id="mnav-calendar">
+        <button class="mobile-nav-btn" id="mnav-calendar">
       <span class="material-symbols-outlined">calendar_month</span>
       <span>Calendar</span>
     </button>
-    <button class="mobile-nav-btn" id="mnav-focus">
+        <button class="mobile-nav-btn" id="mnav-focus">
       <span class="material-symbols-outlined">timer</span>
       <span>Focus</span>
     </button>
-    <button class="mobile-nav-btn" id="mnav-add">
+        <button class="mobile-nav-btn" id="mnav-add">
       <span class="material-symbols-outlined">add_circle</span>
       <span>Add</span>
     </button>
-  </nav>
+    </nav>
 
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>

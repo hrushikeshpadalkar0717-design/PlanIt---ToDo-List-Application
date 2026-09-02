@@ -21,464 +21,452 @@ let pomoMode = 'work'; // 'work' or 'break'
 
 // Initial Execution on DOM Loaded
 document.addEventListener('DOMContentLoaded', () => {
-    initTheme();
-    loadTasks();
-    initHeaderAndGreeting();
-    setupEventListeners();
-    renderAll();
-    initPomodoro();
+  initTheme();
+  loadTasks();
+  initHeaderAndGreeting();
+  setupEventListeners();
+  renderAll();
+  initPomodoro();
 });
 
 /* ==========================================
    THEME & LOCAL STORAGE MANAGEMENT
    ========================================== */
 function initTheme() {
-    const savedTheme = localStorage.getItem('planit_theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeButtonUI(savedTheme);
+  const savedTheme = localStorage.getItem('planit_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  updateThemeButtonUI(savedTheme);
 }
 
 function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('planit_theme', newTheme);
-    updateThemeButtonUI(newTheme);
-    showToast(`Switched to ${newTheme} mode`);
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('planit_theme', newTheme);
+  updateThemeButtonUI(newTheme);
+  showToast(`Switched to ${newTheme} mode`);
 }
 
 function updateThemeButtonUI(theme) {
-    const btnText = document.getElementById('theme-btn-text');
-    const btnIcon = document.querySelector('#theme-toggle-btn .material-symbols-outlined');
-    if (btnText && btnIcon) {
-        if (theme === 'dark') {
-            btnText.textContent = 'Light';
-            btnIcon.textContent = 'light_mode';
-        } else {
-            btnText.textContent = 'Dark';
-            btnIcon.textContent = 'dark_mode';
-        }
+  const btnText = document.getElementById('theme-btn-text');
+  const btnIcon = document.querySelector('#theme-toggle-btn .material-symbols-outlined');
+  if (btnText && btnIcon) {
+    if (theme === 'dark') {
+      btnText.textContent = 'Light';
+      btnIcon.textContent = 'light_mode';
+    } else {
+      btnText.textContent = 'Dark';
+      btnIcon.textContent = 'dark_mode';
     }
+  }
 }
 
 function saveTasks() {
-    localStorage.setItem('planit_tasks', JSON.stringify(tasks));
-    renderAll();
+  localStorage.setItem('planit_tasks', JSON.stringify(tasks));
+  renderAll();
 }
 
 function loadTasks() {
-    const stored = localStorage.getItem('planit_tasks');
-    if (stored) {
-        try {
-            tasks = JSON.parse(stored);
-        } catch (e) {
-            console.error('Failed to parse tasks from LocalStorage', e);
-            tasks = [];
-        }
-    } else {
-        // Populate starter sample tasks if brand new
-        const todayStr = formatDateToYYYYMMDD(new Date());
-
-        // Create an upcoming date (3 days from now)
-        const futureDate = new Date();
-        futureDate.setDate(futureDate.getDate() + 3);
-        const futureStr = formatDateToYYYYMMDD(futureDate);
-
-        tasks = [{
-                id: 'task-1',
-                title: 'Study DSA Data Structures',
-                description: 'Review binary search trees and heap algorithms.',
-                date: todayStr,
-                time: '19:00',
-                priority: 'High',
-                category: 'Study',
-                completed: false,
-                repeat: 'none',
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: 'task-2',
-                title: 'Complete DBMS Assignment',
-                description: 'Write SQL queries for database normalization lab.',
-                date: todayStr,
-                time: '21:00',
-                priority: 'Medium',
-                category: 'Study',
-                completed: false,
-                repeat: 'none',
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: 'task-3',
-                title: 'Prepare Project Presentation',
-                description: 'Design slides for PlanIt application showcase.',
-                date: futureStr,
-                time: '10:00',
-                priority: 'High',
-                category: 'Work',
-                completed: false,
-                repeat: 'none',
-                createdAt: new Date().toISOString()
-            }
-        ];
-        saveTasks();
+  const stored = localStorage.getItem('planit_tasks');
+  if (stored) {
+    try {
+      tasks = JSON.parse(stored);
+    } catch (e) {
+      console.error('Failed to parse tasks from LocalStorage', e);
+      tasks = [];
     }
+  } else {
+    // Populate starter sample tasks if brand new
+    const todayStr = formatDateToYYYYMMDD(new Date());
+    
+    // Create an upcoming date (3 days from now)
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 3);
+    const futureStr = formatDateToYYYYMMDD(futureDate);
+
+    tasks = [
+      {
+        id: 'task-1',
+        title: 'Study DSA Data Structures',
+        description: 'Review binary search trees and heap algorithms.',
+        date: todayStr,
+        time: '19:00',
+        priority: 'High',
+        category: 'Study',
+        completed: false,
+        repeat: 'none',
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: 'task-2',
+        title: 'Complete DBMS Assignment',
+        description: 'Write SQL queries for database normalization lab.',
+        date: todayStr,
+        time: '21:00',
+        priority: 'Medium',
+        category: 'Study',
+        completed: false,
+        repeat: 'none',
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: 'task-3',
+        title: 'Prepare Project Presentation',
+        description: 'Design slides for PlanIt application showcase.',
+        date: futureStr,
+        time: '10:00',
+        priority: 'High',
+        category: 'Work',
+        completed: false,
+        repeat: 'none',
+        createdAt: new Date().toISOString()
+      }
+    ];
+    saveTasks();
+  }
 }
 
 /* ==========================================
    HEADER & GREETING
    ========================================== */
 function initHeaderAndGreeting() {
-    const now = new Date();
-    const options = { weekday: 'long', month: 'long', day: 'numeric' };
-    document.getElementById('header-date').textContent = now.toLocaleDateString('en-US', options);
+  const now = new Date();
+  const options = { weekday: 'long', month: 'long', day: 'numeric' };
+  document.getElementById('header-date').textContent = now.toLocaleDateString('en-US', options);
 
-    const hour = now.getHours();
-    let greetingText = 'Good evening';
-    if (hour >= 5 && hour < 12) {
-        greetingText = 'Good morning';
-    } else if (hour >= 12 && hour < 17) {
-        greetingText = 'Good afternoon';
-    }
-    document.getElementById('greeting-title').textContent = greetingText;
+  const hour = now.getHours();
+  let greetingText = 'Good evening';
+  if (hour >= 5 && hour < 12) {
+    greetingText = 'Good morning';
+  } else if (hour >= 12 && hour < 17) {
+    greetingText = 'Good afternoon';
+  }
+  document.getElementById('greeting-title').textContent = greetingText;
 }
 
 /* ==========================================
    EVENT LISTENERS SETUP
    ========================================== */
 function setupEventListeners() {
-    // Theme Toggle
-    document.getElementById('theme-toggle-btn').addEventListener('click', toggleTheme);
+  // Theme Toggle
+  document.getElementById('theme-toggle-btn').addEventListener('click', toggleTheme);
 
-    // Search Input
-    document.getElementById('search-input').addEventListener('input', (e) => {
-        searchQuery = e.target.value.toLowerCase().trim();
-        renderTasks();
+  // Search Input
+  document.getElementById('search-input').addEventListener('input', (e) => {
+    searchQuery = e.target.value.toLowerCase().trim();
+    renderTasks();
+  });
+
+  // Filter Pills
+  document.querySelectorAll('.filter-pills .btn-pill').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.filter-pills .btn-pill').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      currentFilter = e.target.getAttribute('data-filter');
+      renderTasks();
     });
+  });
 
-    // Filter Pills
-    document.querySelectorAll('.filter-pills .btn-pill').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.filter-pills .btn-pill').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            currentFilter = e.target.getAttribute('data-filter');
-            renderTasks();
-        });
+  // Open Modal Add Task
+  document.getElementById('open-add-modal-btn').addEventListener('click', () => openTaskModal());
+  document.getElementById('mnav-add').addEventListener('click', () => openTaskModal());
+
+  // Close Modal
+  document.getElementById('close-modal-btn').addEventListener('click', closeTaskModal);
+  document.getElementById('cancel-task-btn').addEventListener('click', closeTaskModal);
+
+  // Form Submission
+  document.getElementById('task-form').addEventListener('submit', handleTaskFormSubmit);
+
+  // Priority radio button UI update
+  document.querySelectorAll('.priority-option').forEach(option => {
+    option.addEventListener('click', function() {
+      document.querySelectorAll('.priority-option').forEach(o => o.classList.remove('selected'));
+      this.classList.add('selected');
+      const radio = this.querySelector('input[type="radio"]');
+      if (radio) radio.checked = true;
     });
+  });
 
-    // Open Modal Add Task
-    document.getElementById('open-add-modal-btn').addEventListener('click', () => openTaskModal());
-    document.getElementById('mnav-add').addEventListener('click', () => openTaskModal());
+  // Calendar Controls
+  document.getElementById('prev-month-btn').addEventListener('click', () => {
+    currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+    renderCalendar();
+  });
 
-    // Close Modal
-    document.getElementById('close-modal-btn').addEventListener('click', closeTaskModal);
-    document.getElementById('cancel-task-btn').addEventListener('click', closeTaskModal);
+  document.getElementById('next-month-btn').addEventListener('click', () => {
+    currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+    renderCalendar();
+  });
 
-    // Form Submission
-    document.getElementById('task-form').addEventListener('submit', handleTaskFormSubmit);
+  // Delete Modal Controls
+  document.getElementById('close-delete-modal').addEventListener('click', closeDeleteModal);
+  document.getElementById('cancel-delete-btn').addEventListener('click', closeDeleteModal);
+  document.getElementById('confirm-delete-btn').addEventListener('click', confirmDeleteTask);
 
-    // Priority radio button UI update
-    document.querySelectorAll('.priority-option').forEach(option => {
-        option.addEventListener('click', function() {
-            document.querySelectorAll('.priority-option').forEach(o => o.classList.remove('selected'));
-            this.classList.add('selected');
-            const radio = this.querySelector('input[type="radio"]');
-            if (radio) radio.checked = true;
-        });
-    });
-
-    // Calendar Controls
-    document.getElementById('prev-month-btn').addEventListener('click', () => {
-        currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
-        renderCalendar();
-    });
-
-    document.getElementById('next-month-btn').addEventListener('click', () => {
-        currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
-        renderCalendar();
-    });
-
-    // Delete Modal Controls
-    document.getElementById('close-delete-modal').addEventListener('click', closeDeleteModal);
-    document.getElementById('cancel-delete-btn').addEventListener('click', closeDeleteModal);
-    document.getElementById('confirm-delete-btn').addEventListener('click', confirmDeleteTask);
-
-    // Mobile Bottom Nav Buttons
-    document.getElementById('mnav-tasks').addEventListener('click', () => {
-        setActiveMobileNav('mnav-tasks');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-    document.getElementById('mnav-calendar').addEventListener('click', () => {
-        setActiveMobileNav('mnav-calendar');
-        document.querySelector('.right-column').scrollIntoView({ behavior: 'smooth' });
-    });
-    document.getElementById('mnav-focus').addEventListener('click', () => {
-        setActiveMobileNav('mnav-focus');
-        document.querySelector('.pomodoro-display').scrollIntoView({ behavior: 'smooth' });
-    });
+  // Mobile Bottom Nav Buttons
+  document.getElementById('mnav-tasks').addEventListener('click', () => {
+    setActiveMobileNav('mnav-tasks');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  document.getElementById('mnav-calendar').addEventListener('click', () => {
+    setActiveMobileNav('mnav-calendar');
+    document.querySelector('.right-column').scrollIntoView({ behavior: 'smooth' });
+  });
+  document.getElementById('mnav-focus').addEventListener('click', () => {
+    setActiveMobileNav('mnav-focus');
+    document.querySelector('.pomodoro-display').scrollIntoView({ behavior: 'smooth' });
+  });
 }
 
 function setActiveMobileNav(id) {
-    document.querySelectorAll('.mobile-nav-btn').forEach(btn => btn.classList.remove('active'));
-    const btn = document.getElementById(id);
-
-    if (btn) {
-        btn.classList.add('active');
-    }
+  document.querySelectorAll('.mobile-nav-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById(id)?.classList.add('active');
 }
 
 /* ==========================================
    RENDER ALL COMPONENTS
    ========================================== */
 function renderAll() {
-    renderStats();
-    renderProgress();
-    renderTasks();
-    renderUpcomingTasks();
-    renderCalendar();
-    updatePomodoroTaskDropdown();
+  renderStats();
+  renderProgress();
+  renderTasks();
+  renderUpcomingTasks();
+  renderCalendar();
+  updatePomodoroTaskDropdown();
 }
 
 /* ==========================================
    TASK OPERATIONS (CRUD)
    ========================================== */
 function handleTaskFormSubmit(e) {
-    e.preventDefault();
+  e.preventDefault();
+  
+  const title = document.getElementById('task-title-input').value.trim();
+  const description = document.getElementById('task-desc-input').value.trim();
+  const date = document.getElementById('task-date-input').value;
+  const time = document.getElementById('task-time-input').value;
+  
+  const priorityRadio = document.querySelector('input[name="priority"]:checked');
+  const priority = priorityRadio ? priorityRadio.value : 'Medium';
+  
+  const category = document.getElementById('task-category-select').value;
+  const repeat = document.getElementById('task-repeat-select').value;
 
-    const title = document.getElementById('task-title-input').value.trim();
-    const description = document.getElementById('task-desc-input').value.trim();
-    const date = document.getElementById('task-date-input').value;
-    const time = document.getElementById('task-time-input').value;
+  if (!title || !date) {
+    showToast('Please fill in required fields.', 'error');
+    return;
+  }
 
-    const priorityRadio = document.querySelector('input[name="priority"]:checked');
-    const priority = priorityRadio ? priorityRadio.value : 'Medium';
-
-    const category = document.getElementById('task-category-select').value;
-    const repeat = document.getElementById('task-repeat-select').value;
-
-    if (!title || !date) {
-        showToast('Please fill in required fields.', 'error');
-        return;
+  if (editingTaskId) {
+    // Edit existing task
+    const taskIndex = tasks.findIndex(t => t.id === editingTaskId);
+    if (taskIndex !== -1) {
+      tasks[taskIndex] = {
+        ...tasks[taskIndex],
+        title,
+        description,
+        date,
+        time,
+        priority,
+        category,
+        repeat
+      };
+      showToast('Task updated successfully!');
     }
+  } else {
+    // Create new task
+    const newTask = {
+      id: 'task-' + Date.now(),
+      title,
+      description,
+      date,
+      time,
+      priority,
+      category,
+      completed: false,
+      repeat,
+      createdAt: new Date().toISOString()
+    };
+    tasks.unshift(newTask);
+    showToast('Task created successfully!');
+  }
 
-    if (editingTaskId) {
-        // Edit existing task
-        const taskIndex = tasks.findIndex(t => t.id === editingTaskId);
-        if (taskIndex !== -1) {
-            tasks[taskIndex] = {
-                ...tasks[taskIndex],
-                title,
-                description,
-                date,
-                time,
-                priority,
-                category,
-                repeat
-            };
-            showToast('Task updated successfully!');
-        }
-    } else {
-        // Create new task
-        const newTask = {
-            id: 'task-' + Date.now(),
-            title,
-            description,
-            date,
-            time,
-            priority,
-            category,
-            completed: false,
-            repeat,
-            createdAt: new Date().toISOString()
-        };
-        tasks.unshift(newTask);
-        showToast('Task created successfully!');
-    }
-
-    saveTasks();
-    closeTaskModal();
+  saveTasks();
+  closeTaskModal();
 }
 
 function toggleTask(id) {
-    const task = tasks.find(t => t.id === id);
-    if (task) {
-        task.completed = !task.completed;
-        saveTasks();
-        if (task.completed) {
-            showToast('Task marked as completed! 🎉');
-        }
+  const task = tasks.find(t => t.id === id);
+  if (task) {
+    task.completed = !task.completed;
+    saveTasks();
+    if (task.completed) {
+      showToast('Task marked as completed! 🎉');
     }
+  }
 }
 
 function openTaskModal(task = null) {
-    const modal = document.getElementById('task-modal');
-    const heading = document.getElementById('modal-heading');
-    const form = document.getElementById('task-form');
-    form.reset();
+  const modal = document.getElementById('task-modal');
+  const heading = document.getElementById('modal-heading');
+  const form = document.getElementById('task-form');
+  form.reset();
 
-    // Reset Priority Pills UI
-    document.querySelectorAll('.priority-option').forEach(o => o.classList.remove('selected'));
+  // Reset Priority Pills UI
+  document.querySelectorAll('.priority-option').forEach(o => o.classList.remove('selected'));
 
-    if (task) {
-        editingTaskId = task.id;
-        heading.textContent = 'Edit Task';
-        document.getElementById('task-id').value = task.id;
-        document.getElementById('task-title-input').value = task.title;
-        document.getElementById('task-desc-input').value = task.description || '';
-        document.getElementById('task-date-input').value = task.date;
-        document.getElementById('task-time-input').value = task.time || '';
-        document.getElementById('task-category-select').value = task.category || 'Study';
-        document.getElementById('task-repeat-select').value = task.repeat || 'none';
+  if (task) {
+    editingTaskId = task.id;
+    heading.textContent = 'Edit Task';
+    document.getElementById('task-id').value = task.id;
+    document.getElementById('task-title-input').value = task.title;
+    document.getElementById('task-desc-input').value = task.description || '';
+    document.getElementById('task-date-input').value = task.date;
+    document.getElementById('task-time-input').value = task.time || '';
+    document.getElementById('task-category-select').value = task.category || 'Study';
+    document.getElementById('task-repeat-select').value = task.repeat || 'none';
 
-        // Priority
-        const prio = task.priority || 'Medium';
-        const radio = document.querySelector(`input[name="priority"][value="${prio}"]`);
-        if (radio) {
-            radio.checked = true;
-            radio.closest('.priority-option').classList.add('selected');
-        }
-    } else {
-        editingTaskId = null;
-        heading.textContent = 'New Task';
-        document.getElementById('task-id').value = '';
-
-        // Default to today's date
-        document.getElementById('task-date-input').value = formatDateToYYYYMMDD(new Date());
-
-        // Default priority Medium
-        const defaultPrioLabel = document.getElementById('prio-med-label');
-        if (defaultPrioLabel) {
-            defaultPrioLabel.classList.add('selected');
-            const rad = defaultPrioLabel.querySelector('input');
-            if (rad) rad.checked = true;
-        }
+    // Priority
+    const prio = task.priority || 'Medium';
+    const radio = document.querySelector(`input[name="priority"][value="${prio}"]`);
+    if (radio) {
+      radio.checked = true;
+      radio.closest('.priority-option').classList.add('selected');
     }
+  } else {
+    editingTaskId = null;
+    heading.textContent = 'New Task';
+    document.getElementById('task-id').value = '';
+    
+    // Default to today's date
+    document.getElementById('task-date-input').value = formatDateToYYYYMMDD(new Date());
+    
+    // Default priority Medium
+    const defaultPrioLabel = document.getElementById('prio-med-label');
+    if (defaultPrioLabel) {
+      defaultPrioLabel.classList.add('selected');
+      const rad = defaultPrioLabel.querySelector('input');
+      if (rad) rad.checked = true;
+    }
+  }
 
-    modal.classList.add('active');
+  modal.classList.add('active');
 }
 
 function closeTaskModal() {
-    document.getElementById('task-modal').classList.remove('active');
-    editingTaskId = null;
+  document.getElementById('task-modal').classList.remove('active');
+  editingTaskId = null;
 }
 
 function promptDeleteTask(id) {
-    taskToDeleteId = id;
-    document.getElementById('delete-modal').classList.add('active');
+  taskToDeleteId = id;
+  document.getElementById('delete-modal').classList.add('active');
 }
 
 function closeDeleteModal() {
-    document.getElementById('delete-modal').classList.remove('active');
-    taskToDeleteId = null;
+  document.getElementById('delete-modal').classList.remove('active');
+  taskToDeleteId = null;
 }
 
 function confirmDeleteTask() {
-    if (taskToDeleteId) {
-        tasks = tasks.filter(t => t.id !== taskToDeleteId);
-        saveTasks();
-        showToast('Task deleted');
-        closeDeleteModal();
-    }
+  if (taskToDeleteId) {
+    tasks = tasks.filter(t => t.id !== taskToDeleteId);
+    saveTasks();
+    showToast('Task deleted');
+    closeDeleteModal();
+  }
 }
 
 /* ==========================================
    RENDER TASK LIST & FILTERS
    ========================================== */
 function renderTasks() {
-    const container = document.getElementById('task-list-container');
-    const emptyState = document.getElementById('tasks-empty-state');
-    const titleElem = document.getElementById('task-list-title');
+  const container = document.getElementById('task-list-container');
+  const emptyState = document.getElementById('tasks-empty-state');
+  const titleElem = document.getElementById('task-list-title');
 
-    let filtered = [...tasks];
-    const todayStr = formatDateToYYYYMMDD(new Date());
+  let filtered = [...tasks];
+  const todayStr = formatDateToYYYYMMDD(new Date());
 
-    // Filter selection
-    if (currentFilter === 'today') {
-        titleElem.textContent = "Today's Tasks";
-        filtered = filtered.filter(t => t.date === todayStr);
-    } else if (currentFilter === 'upcoming') {
-        titleElem.textContent = "Upcoming Tasks";
-        filtered = filtered.filter(t => t.date > todayStr && !t.completed);
-    } else if (currentFilter === 'completed') {
-        titleElem.textContent = "Completed Tasks";
-        filtered = filtered.filter(t => t.completed);
-    } else {
-        titleElem.textContent = "All Tasks";
-    }
+  // Filter selection
+  if (currentFilter === 'today') {
+    titleElem.textContent = "Today's Tasks";
+    filtered = filtered.filter(t => t.date === todayStr);
+  } else if (currentFilter === 'upcoming') {
+    titleElem.textContent = "Upcoming Tasks";
+    filtered = filtered.filter(t => t.date > todayStr && !t.completed);
+  } else if (currentFilter === 'completed') {
+    titleElem.textContent = "Completed Tasks";
+    filtered = filtered.filter(t => t.completed);
+  } else {
+    titleElem.textContent = "All Tasks";
+  }
 
-    // Search filter
+  // Search filter
+  if (searchQuery) {
+    filtered = filtered.filter(t => 
+      t.title.toLowerCase().includes(searchQuery) || 
+      (t.description && t.description.toLowerCase().includes(searchQuery))
+    );
+  }
+
+  // Sort tasks: pending first, then by date, then time
+  filtered.sort((a, b) => {
+    if (a.completed !== b.completed) return a.completed ? 1 : -1;
+    if (a.date !== b.date) return a.date.localeCompare(b.date);
+    return (a.time || '').localeCompare(b.time || '');
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = '';
+    emptyState.style.display = 'block';
     if (searchQuery) {
-        filtered = filtered.filter(t =>
-            t.title.toLowerCase().includes(searchQuery) ||
-            (t.description && t.description.toLowerCase().includes(searchQuery))
-        );
+      emptyState.textContent = `No tasks matching "${searchQuery}".`;
+    } else if (currentFilter === 'today') {
+      emptyState.textContent = 'No tasks scheduled for today.';
+    } else if (currentFilter === 'upcoming') {
+      emptyState.textContent = 'No upcoming future tasks.';
+    } else if (currentFilter === 'completed') {
+      emptyState.textContent = 'No completed tasks yet.';
+    } else {
+      emptyState.textContent = 'Nothing here yet. Add your first task.';
     }
+    return;
+  }
 
-    // Sort tasks: pending first, then by date, then time
-    filtered.sort((a, b) => {
-        if (a.completed !== b.completed) return a.completed ? 1 : -1;
-        if (a.date !== b.date) return a.date.localeCompare(b.date);
-        return (a.time || '').localeCompare(b.time || '');
-    });
+  emptyState.style.display = 'none';
+  container.innerHTML = filtered.map(t => createTaskItemHTML(t)).join('');
 
-    if (filtered.length === 0) {
-        container.innerHTML = '';
-        emptyState.style.display = 'block';
-        if (searchQuery) {
-            emptyState.textContent = `No tasks matching "${searchQuery}".`;
-        } else if (currentFilter === 'today') {
-            emptyState.textContent = 'No tasks scheduled for today.';
-        } else if (currentFilter === 'upcoming') {
-            emptyState.textContent = 'No upcoming future tasks.';
-        } else if (currentFilter === 'completed') {
-            emptyState.textContent = 'No completed tasks yet.';
-        } else {
-            emptyState.textContent = 'Nothing here yet. Add your first task.';
-        }
-        return;
-    }
+  // Attach event listeners to task elements
+  filtered.forEach(t => {
+    const itemElem = document.getElementById(`task-item-${t.id}`);
+    if (!itemElem) return;
 
-    emptyState.style.display = 'none';
-    container.innerHTML = filtered.map(t => createTaskItemHTML(t)).join('');
+    // Checkbox click
+    const cb = itemElem.querySelector('.task-checkbox-wrap');
+    cb?.addEventListener('click', () => toggleTask(t.id));
 
-    // Attach event listeners to task elements
-    filtered.forEach(t => {
-        const itemElem = document.getElementById(`task-item-${t.id}`);
-        if (!itemElem) return;
+    // Edit button
+    const editBtn = itemElem.querySelector('.edit-btn');
+    editBtn?.addEventListener('click', () => openTaskModal(t));
 
-        // Checkbox click
-        const cb = itemElem.querySelector('.task-checkbox-wrap');
-
-        if (cb) {
-            cb.addEventListener('click', () => toggleTask(t.id));
-        }
-
-        // Edit button
-        const editBtn = itemElem.querySelector('.edit-btn');
-
-        if (editBtn) {
-            editBtn.addEventListener('click', () => openTaskModal(t));
-        }
-
-        // Delete button
-        const delBtn = itemElem.querySelector('.delete-btn');
-
-        if (delBtn) {
-            delBtn.addEventListener('click', () => promptDeleteTask(t.id));
-        }
-    });
+    // Delete button
+    const delBtn = itemElem.querySelector('.delete-btn');
+    delBtn?.addEventListener('click', () => promptDeleteTask(t.id));
+  });
 }
 
 function createTaskItemHTML(task) {
-    const isOverdue = checkIfOverdue(task);
-    const formattedTime = task.time ? formatTime12hr(task.time) : '';
-    const formattedDate = formatDateDisplay(task.date);
+  const isOverdue = checkIfOverdue(task);
+  const formattedTime = task.time ? formatTime12hr(task.time) : '';
+  const formattedDate = formatDateDisplay(task.date);
 
-    let priorityClass = 'badge-priority-medium';
-    if (task.priority === 'High') priorityClass = 'badge-priority-high';
-    if (task.priority === 'Low') priorityClass = 'badge-priority-low';
+  let priorityClass = 'badge-priority-medium';
+  if (task.priority === 'High') priorityClass = 'badge-priority-high';
+  if (task.priority === 'Low') priorityClass = 'badge-priority-low';
 
-    return `
+  return `
     <div class="task-item ${task.completed ? 'completed' : ''}" id="task-item-${task.id}">
       <div class="task-checkbox-wrap" aria-label="Toggle completed">
         <div class="custom-checkbox">
